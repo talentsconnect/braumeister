@@ -28,6 +28,5 @@ setup(
         "Intended Audience :: Developers",
         "Topic :: Utilities",
         "Topic :: Software Development :: Version Control :: Git"
-        "License :: OSI Approved :: MIT License",
     ],
 )
