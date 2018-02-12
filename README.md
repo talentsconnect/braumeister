@@ -11,6 +11,9 @@
 (__)         (__)              '-'  '-'(__)                        (__)        (__) 
 ```
 
+`Braumeister` is a release-candidate preparation tool for git and JIRA users. 
+Given a fix-version, it gathers git branches mentioned in JIRA issues targetting this fix-version and merges them in a release-candidate branch.
+
 # Installation
 **The `Braumeister` requires at least Python `3.5`**
 
