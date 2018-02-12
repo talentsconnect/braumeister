@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/talentsconnect/braumeister.svg?branch=master)](https://travis-ci.org/talentsconnect/braumeister)
+
 ```none
   ,---.   ,---.    .--.  .-. .-.         ,---.  ,-.   .---.  _______ ,---.  ,---.    
  | .-.\  | .-.\  / /\ \ | | | ||\    /| | .-'  |(|  ( .-._)|__   __|| .-'  | .-.\   
