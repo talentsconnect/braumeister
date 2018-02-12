@@ -6,4 +6,4 @@ python:
 sudo: false
 install:
   - "pip install mock requests colorama"
-script: "python -m unittest discover -p *_test.py"
+script: "make clean test"
