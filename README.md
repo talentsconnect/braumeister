@@ -1,3 +1,4 @@
+[![PyPI](https://img.shields.io/pypi/v/Braumeister.svg)](https://pypi.python.org/pypi/Braumeister/)
 [![Build Status](https://travis-ci.org/talentsconnect/braumeister.svg?branch=master)](https://travis-ci.org/talentsconnect/braumeister)
 
 ```none
