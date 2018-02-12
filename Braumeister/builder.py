@@ -73,9 +73,9 @@ class Builder:
 
     def print_after_error(self, current_branch):
         if "release" in current_branch:
-            print("\nA merge error occured while merging feature into " + current_branch)
+            print("\nA merge error occurred while merging feature into " + current_branch)
         else:
-            print("\nA merge error occured while merging master into " + current_branch)
+            print("\nA merge error occurred while merging master into " + current_branch)
 
         print("\nPlease do the following steps:")
         print("\t* Resolve the conflicts")

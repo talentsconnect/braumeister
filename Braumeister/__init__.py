@@ -51,7 +51,7 @@ def main():
     try:
         builder.execute()
     except ValueError as error:
-        print(Fore.RED + "[-] " + Fore.RESET + "Eror: " + error.args[0])
+        print(Fore.RED + "[-] " + Fore.RESET + "Error: " + error.args[0])
 
 
 if __name__ == 'main':
