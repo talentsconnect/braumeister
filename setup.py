@@ -20,7 +20,7 @@ setup(
     entry_points={
         'console_scripts': ["braumeister = Braumeister:main"]
     },
-    python_requires='>=3.0',
+    python_requires='!=2.7, !=3.4, >=3.5',
     zip_safe=False,
     classifiers=[
         "Development Status :: 4 - Beta",
