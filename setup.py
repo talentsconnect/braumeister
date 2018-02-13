@@ -6,7 +6,7 @@ def read(fname):
 
 setup(
     name="Braumeister",
-    version="0.0.5",
+    version="0.1.0",
     author="Marcel Steffen",
     author_email="marcel@talentsconnect.com",
     description="Easy release bulding, combining JIRA and git",
