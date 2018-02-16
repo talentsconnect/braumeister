@@ -69,7 +69,7 @@ class Builder:
         current_branch = Git.get_current_branch()
         self.print_after_error(current_branch)
 
-        sys.exit()
+        sys.exit(1)
 
     def print_after_error(self, current_branch):
         if "release" in current_branch:
