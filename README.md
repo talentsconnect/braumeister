@@ -11,11 +11,11 @@
 (__)         (__)              '-'  '-'(__)                        (__)        (__) 
 ```
 
-`Braumeister` is a release-candidate preparation tool for git and JIRA users. 
+`braumeister` is a release-candidate preparation tool for git and JIRA users. 
 Given a fix-version, it gathers git branches mentioned in JIRA issues targetting this fix-version and merges them in a release-candidate branch.
 
 # Installation
-**The `Braumeister` requires at least Python `3.5`**
+**The `braumeister` requires at least Python `3.5`**
 
 Install with:
 ```sh
@@ -23,12 +23,12 @@ pip3 install braumeister
 ```
 
 # Configuration
-You can initialize the `Braumeister` inside the root directory of a git repository like this:
+You can initialize the `braumeister` inside the root directory of a git repository like this:
 ```sh
 braumeister init
 ```
 
-The `Braumeister` will create a `.braumeister` configuration file in the current directory. The configuration may look like this:
+The `braumeister` will create a `.braumeister` configuration file in the current directory. The configuration may look like this:
 
 ```ini
 [general]
@@ -76,16 +76,16 @@ e.g.:
 ```none
 https://jira.dev/secure/admin/ConfigureCustomField!default.jspa?customFieldId=57111
 ```
-Here, the JIRA Custom Field Id is `57111`, so the `Braumeister` configuration for `branch_custom_field_id` would be `customfield_5711`.
+Here, the JIRA Custom Field Id is `5711`, so the `braumeister` configuration for `branch_custom_field_id` would be `customfield_5711`.
 
 # Description
-The `Braumeister` requests all issues from JIRA with the given release name as `Fix Version`.
+The `braumeister` requests all issues from JIRA with the given release name as `Fix Version`.
 In theses tickets, we'll search for the configured custom field (eg Branch) containing the git branch.
 The release branch will be created like this:
 ```
 release/[cleaned_release_name]_RC_[LATEST_RC + 1]
 ```
-If the `Braumeister` discovered a branch with the same name, we'll increase the `RC` part with 1 (with leading zeros). The first release branch will have the RC `001`.
+If the `braumeister` discovered a branch with the same name, we'll increase the `RC` part with 1 (with leading zeros). The first release branch will have the RC `001`.
 
 For each of theses branches, the following commands will be executed:
 ```sh
@@ -101,9 +101,9 @@ $ git branch -D $branch
 After merging all branches to the release branch, the branch will be pushed to `origin`.
 
 ## Conflicts
-If there are any conflicts during the merge of a branch, the `Braumeister` will stop and write the current state to a `release_state.json` file. The output may looks like this:
+If there are any conflicts during the merge of a branch, the `braumeister` will stop and write the current state to a `release_state.json` file. The output may looks like this:
 ```sh
-$ braumeister "Barking Dog"
+$ braumeister -v "Barking Dog" candidate
 [*] Requesting all issues with fixVersion: Barking Dog
 [+] Requesting issue: https://jira.dev/rest/api/2/issue/5711
 [+] Requesting issue: https://jira.dev/rest/api/2/issue/5712
@@ -129,10 +129,10 @@ Please do the following steps:
 	* Call the script again with the option -r
 ```
 
-The `Braumeister` will stay in the current release branch to let you resolve the conflict. After the conflict has been resolved, you can rerun the `Braumeister` with `-r` to resume where we stopped.
+The `braumeister` will stay in the current release branch to let you resolve the conflict. After the conflict has been resolved, you can rerun the `braumeister` with `-r` to resume where we stopped.
 
 ```sh
-$ braumeister "Barking Dog" -r
+$ braumeister -v "Barking Dog" -r candidate
 Reading state json!
 Resuming with feature-1
 [🍻 ] Merging feature-1...
@@ -147,9 +147,12 @@ Deleting state json!
 ```
 
 ## Examples
-### New release
+
+### Release Candidate
+
+#### New release candidate
 ```sh
-$ braumeister "Barking Dog"
+$ braumeister -v "Barking Dog" candidate
 [*] Requesting all issues with fixVersion: Barking Dog
 [+] Requesting issue: https://jira.dev/rest/api/2/issue/5711
 [+] Creating new branch 'release/Barking_Dog_RC_001' from master
@@ -164,11 +167,11 @@ Switched to a new branch 'release/Barking_Dog_RC_001'
 [🍻 ] All done. Grab a 🍺
 ```
 
-### Existing Release
-When you execute the `Braumeister` with the same release name again, a new release candidate will be created (increasing the `RC` part with 1).
+#### Existing release candidate
+When you execute the `braumeister` with the same release name again, a new release candidate will be created (increasing the `RC` part with 1).
 
 ```sh
-$ braumeister "Barking Dog"
+$ braumeister -v "Barking Dog" candidate
 [*] Requesting all issues with fixVersion: Barking Dog
 [+] Requesting issue: https://jira.dev/rest/api/2/issue/5711
 [+] The last branch for RC Barking Dog is: release/Barking_Dog_RC_001
@@ -184,11 +187,11 @@ Switched to a new branch 'release/Barking_Dog_RC_002'
 [🍻 ] All done. Grab a 🍺
 ```
 
-### Update JIRA issue
-Executing the `Braumeister` with `-u` will also execute the configured transition on all related issues.
+#### Update JIRA issue
+Executing the `braumeister` with `-u` will also execute the configured transition on all related issues.
 
 ```sh
-$ braumeister "Barking Dog" -u
+$ braumeister -v "Barking Dog" -u candidate
 [*] Requesting all issues with fixVersion: Barking Dog
 [+] Requesting issue: https://jira.dev/rest/api/2/issue/31300
 [+] Requesting issue: https://jira.dev/rest/api/2/issue/30209
@@ -216,6 +219,56 @@ Updating jira status on DEV-2 to Staging Needed
 
 [🍻 ] All done. Grab a 🍺
 ```
+
+### Release
+
+#### New release
+```sh
+$ braumeister -v "Barking Dog" release
+[*] Requesting all issues with fixVersion: Barking Dog
+[+] Requesting issue: https://jira.dev/rest/api/2/issue/5711
+[+] Creating new branch 'release/Barking_Dog_GA' from master
+
+Branch 'release/Barking_Dog_GA' set up to track remote branch 'master' from 'origin'.
+Switched to a new branch 'release/Barking_Dog_GA'
+
+[🍻 ] Merging affe...
+[🍻 ] Branch 'affe' merged
+
+[🍻 ] All done. Grab a 🍺
+```
+
+#### Finalize a release
+When you execute the `braumeister` with the `finalize` action it will merge the given branch back to `origin/master`. 
+
+THIS CHANGES YOUR REMOTE REPOSITORY, HANDLE WITH CARE!
+
+```sh
+$ braumeister -v "Barking Dog" finalize
+[+] Merging branch 'release/Barking_Dog_GA' to origin/master
+
+[🍻 ] Merging release/Barking_Dog_GA...
+[🍻 ] Branch 'release/Barking_Dog_GA' merged
+
+[🍻 ] All done. Grab a 🍺
+```
+
+#### Cleanup after a release
+When you execute the `braumeister` with the `cleanup` action it will delete all branches associated with tickets in your `fixVersion`.
+
+THIS CHANGES YOUR REMOTE REPOSITORY, HANDLE WITH CARE!
+
+```sh
+$ braumeister -v "Barking Dog" cleanup
+[+] Cleaning up after release of Barking Dog
+
+[🍻 ] Deleting origin/feature-fifty...
+[🍻 ] Deleting origin/feature-seven...
+[🍻 ] Deleting origin/feature-eleven...
+
+[🍻 ] Brewhouse all clean again. Grab a 🍺
+```
+
 # Development
 Running tests
 ```sh

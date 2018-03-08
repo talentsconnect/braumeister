@@ -2,8 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from unittest import TestCase, main
-from ..settings import Settings
-
+from braumeister.settings import Settings
 
 class SettingsTest(TestCase):
 
@@ -20,9 +19,9 @@ class SettingsTest(TestCase):
         Settings.load()
         Settings.save("general", "hund", "wuff")
         val = Settings.get("general", "hund")
-        
+
         self.assertEqual(val, "wuff")
-    
+
     def test_get_bool(self):
         Settings.load()
         verbose = Settings.get("general", "verbose")
