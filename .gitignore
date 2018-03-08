@@ -1,4 +1,5 @@
 .braumeister
+release_state.json
 .vscode/
 .idea/
 *.iml
