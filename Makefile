@@ -3,7 +3,7 @@
 .PHONY: clean
 
 clean:
-	-rm -rf build dist MANIFEST Braumeister.egg-info .braumeister
+	-rm -rf build dist MANIFEST braumeister.egg-info .braumeister
 	-find . -name '*.py[oc]' -exec rm {} \;
 
 test:

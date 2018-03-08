@@ -6,8 +6,19 @@ import os.path
 from pathlib import Path
 from colorama import Fore
 
+dry_run = False
 
 class Settings:
+
+    @staticmethod
+    def set_dry_run(dry_run_state):
+        global dry_run
+        dry_run = dry_run_state
+
+    @staticmethod
+    def is_dry_run():
+        global dry_run
+        return dry_run
 
     @staticmethod
     def load():
@@ -22,7 +33,7 @@ class Settings:
 
     @staticmethod
     def write_default_conf(config):
-        print(Fore.GREEN + "[+] " + Fore.RESET + "Writing default config")
+        print(Fore.GREEN + "[+] " + Fore.RESET + "Writing my default config")
 
         config.add_section("general")
         config.set("general", "verbose", "false")
@@ -65,10 +76,7 @@ class Settings:
     def get(section, key, default_value=None):
         config = Settings.load()
 
-        #print("[settings] get: section=%s; key=%s; default_value=%s" % (section, key, default_value))
-
         if not section in config.sections():
-            #print("[settings] section not found. sections=" + ", ".join(config.sections()) )
             return default_value
 
         if section == "general" and key == "verbose":

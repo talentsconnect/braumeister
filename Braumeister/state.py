@@ -5,15 +5,17 @@ import json
 import os
 import os.path
 
+from braumeister.settings import Settings
 
 class State:
 
     @staticmethod
     def write_file(state):
         print("\nWriting state json!")
-        with open('release_state.json', 'w') as outfile:
-            json.dump(state, outfile, indent=4)
-    
+        if (not Settings.is_dry_run()):
+            with open('release_state.json', 'w') as outfile:
+                json.dump(state, outfile, indent=4)
+
     @staticmethod
     def read_file():
         print("Reading state json!")
@@ -24,7 +26,8 @@ class State:
     def delete_file():
         if os.path.isfile("release_state.json"):
             print("Deleting state json!")
-            os.remove("release_state.json")
+            if (not Settings.is_dry_run()):
+                os.remove("release_state.json")
 
     @staticmethod
     def get_data_from_branches(branches, release_branch_name, abort_branch, resume_code):
@@ -55,7 +58,7 @@ class State:
                 branches[b["name"]] = b["issues"]
 
         return branches
-    
+
     @staticmethod
     def get_issues_from_branches(branches):
         issues = []
