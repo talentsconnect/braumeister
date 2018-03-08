@@ -192,7 +192,7 @@ class Git:
 
                 if (not Settings.is_dry_run()):
                     Git.call_git_command(["git", "push", "origin",  ":" + current_branch])
-                    Git.call_git_command(["git", "branch", "-d", current_branch])
+                    Git.call_git_command(["git", "branch", "-D", current_branch])
 
             except ValueError as e:
                 raise GitException(current_branch, 0)
