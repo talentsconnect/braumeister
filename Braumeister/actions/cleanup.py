@@ -44,7 +44,7 @@ class Cleanup:
         sys.exit(1)
 
     def print_after_error(self, current_branch):
-        print("\nFaile to delete remote branch " + current_branch)
+        print("\nFailed to delete local/remote branch " + current_branch)
         print("\nPlease do the following steps:")
         print("\t* Resolve the errors")
         print("\t* Commit the changes")

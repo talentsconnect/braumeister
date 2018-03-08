@@ -191,8 +191,14 @@ class Git:
                 print(Fore.GREEN + "[🍻 ] " + Fore.RESET + "Deleting %s..." % current_branch)
 
                 if (not Settings.is_dry_run()):
-                    Git.call_git_command(["git", "push", "origin",  ":" + current_branch])
-                    Git.call_git_command(["git", "branch", "-D", current_branch])
+                    try:
+                        Git.call_git_command(["git", "push", "origin",  ":" + current_branch])
+                    except:
+                        print(Fore.YELLOW + "[*] " + Fore.RESET + "Error ocurred while deleting remote branch %s, please verify deletion manually" % current_branch)
+                    try:
+                        Git.call_git_command(["git", "branch", "-D", current_branch])
+                    except Exception as e:
+                        print(Fore.YELLOW + "[*] " + Fore.RESET + "Error ocurred while deleting local branch %s, please verify deletion manually" % current_branch)
 
             except ValueError as e:
                 raise GitException(current_branch, 0)
