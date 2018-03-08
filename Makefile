@@ -8,7 +8,7 @@ clean:
 
 test:
 	@make clean
-	python3 -m unittest discover -p *_test.py -t .
+	python3 -m unittest tests/*_test.py
 	@make clean
 
 usage:
