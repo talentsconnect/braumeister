@@ -4,7 +4,7 @@
 import os
 import getpass
 from colorama import Fore
-from braumeister.settings import Settings
+from .settings import Settings
 
 HEADER = "\
   ,---.   ,---.    .--.  .-. .-.         ,---." + Fore.WHITE + ",-. " + Fore.GREEN + "  .---.  _______ ,---.  ,---.    \n\

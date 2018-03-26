@@ -4,9 +4,9 @@ import sys
 import pkg_resources
 from colorama import init, Fore
 
-from braumeister.builder import Builder
-from braumeister.settings import Settings
-from braumeister.setup import Setup
+from .builder import Builder
+from .settings import Settings
+from .setup import Setup
 
 
 class Core:

@@ -6,7 +6,7 @@ def read(fname):
 
 setup(
     name="braumeister",
-    version="0.2.1",
+    version="0.2.2",
     author="Marcel Steffen",
     author_email="marcel@talentsconnect.com",
     description="Easy release bulding, combining JIRA and git",
@@ -18,7 +18,7 @@ setup(
     include_package_data=True,
     install_requires=['requests', 'colorama'],
     entry_points={
-        'console_scripts': ["braumeister = braumeister:main"]
+        'console_scripts': ["braumeister = braumeister.braumeister:main"]
     },
     python_requires='!=2.7, !=3.4, >=3.5',
     zip_safe=False,

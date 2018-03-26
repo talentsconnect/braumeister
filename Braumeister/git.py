@@ -6,7 +6,7 @@ import sys
 
 from colorama import Fore
 
-from braumeister.settings import Settings
+from .settings import Settings
 
 
 class Git:
