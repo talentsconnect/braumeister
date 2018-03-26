@@ -5,9 +5,9 @@ import sys
 
 from colorama import Fore
 
-from braumeister.git import Git, GitException
-from braumeister.jira import Jira
-from braumeister.state import State
+from ..git import Git, GitException
+from ..jira import Jira
+from ..state import State
 
 
 class Release:

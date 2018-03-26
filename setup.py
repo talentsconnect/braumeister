@@ -1,12 +1,20 @@
 import os
-from setuptools import setup, find_packages
+import re
+from setuptools import setup
+
+version = re.search(
+    '^__version__\s*=\s*"(.*)"',
+    open('braumeister/braumeister.py').read(),
+    re.M
+).group(1)
 
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 setup(
     name="braumeister",
-    version="0.2.2",
+    packages = ["braumeister", "braumeister.actions"],
+    version=version,
     author="Marcel Steffen",
     author_email="marcel@talentsconnect.com",
     description="Easy release bulding, combining JIRA and git",
@@ -14,7 +22,6 @@ setup(
     license="MIT",
     keywords="git jira release",
     url="https://www.talentsconnect.com",
-    packages=find_packages(exclude=['ez_setup', 'tests', 'tests.*']),
     include_package_data=True,
     install_requires=['requests', 'colorama'],
     entry_points={
