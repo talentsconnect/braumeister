@@ -26,8 +26,8 @@ class Core:
         )
 
         parser.add_argument(
-            '-v',
-            '--version',
+            '-n',
+            '--name',
             help='Name or version of your release (candidate)',
             action='store',
             dest='fix_version'
@@ -62,7 +62,7 @@ class Core:
             sys.exit(0)
         else:
             if not args.fix_version:
-                print(Fore.RED + "[-] " + Fore.RESET + "Error: missing -v FIX_VERSION parameter")
+                print(Fore.RED + "[-] " + Fore.RESET + "Error: missing -n FIX_VERSION parameter")
                 sys.exit(1)
 
         Settings.load()
