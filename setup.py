@@ -6,6 +6,7 @@ def read(fname):
 
 setup(
     name="braumeister",
+    packages = ["braumeister"],
     version="0.2.2",
     author="Marcel Steffen",
     author_email="marcel@talentsconnect.com",
@@ -14,7 +15,6 @@ setup(
     license="MIT",
     keywords="git jira release",
     url="https://www.talentsconnect.com",
-    packages=find_packages(exclude=['ez_setup', 'tests', 'tests.*']),
     include_package_data=True,
     install_requires=['requests', 'colorama'],
     entry_points={
