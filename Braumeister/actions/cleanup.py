@@ -5,8 +5,8 @@ import sys
 
 from colorama import Fore
 
-from braumeister.git import Git, GitException
-from braumeister.jira import Jira
+from ..git import Git, GitException
+from ..jira import Jira
 
 
 class Cleanup:

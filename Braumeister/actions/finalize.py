@@ -5,7 +5,7 @@ import sys
 
 from colorama import Fore
 
-from braumeister.git import Git, GitException
+from ..git import Git, GitException
 
 
 class Finalize:
