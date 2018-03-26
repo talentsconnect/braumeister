@@ -8,7 +8,7 @@ clean:
 
 test:
 	@make clean
-	python3 -m unittest tests/*_test.py
+	python3 -m unittest Braumeister/tests/*_test.py
 	@make clean
 
 usage:

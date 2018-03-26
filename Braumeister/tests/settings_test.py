@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from unittest import TestCase, main
-from braumeister.settings import Settings
+from ..settings import Settings
 
 class SettingsTest(TestCase):
 
