@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from braumeister.actions.candidate import Candidate
-from braumeister.actions.release import Release
-from braumeister.actions.finalize import Finalize
-from braumeister.actions.cleanup import Cleanup
+from .actions.candidate import Candidate
+from .actions.release import Release
+from .actions.finalize import Finalize
+from .actions.cleanup import Cleanup
+
 class Builder:
 
     def __init__(self, action, fix_version, resume, update_jira):

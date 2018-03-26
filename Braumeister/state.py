@@ -5,7 +5,7 @@ import json
 import os
 import os.path
 
-from braumeister.settings import Settings
+from .settings import Settings
 
 class State:
 

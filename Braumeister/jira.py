@@ -6,7 +6,7 @@ import json
 import requests
 from colorama import Fore
 
-from braumeister.settings import Settings
+from .settings import Settings
 
 class Jira:
 

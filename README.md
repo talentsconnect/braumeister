@@ -103,7 +103,7 @@ After merging all branches to the release branch, the branch will be pushed to `
 ## Conflicts
 If there are any conflicts during the merge of a branch, the `braumeister` will stop and write the current state to a `release_state.json` file. The output may looks like this:
 ```sh
-$ braumeister -v "Barking Dog" candidate
+$ braumeister -n "Barking Dog" candidate
 [*] Requesting all issues with fixVersion: Barking Dog
 [+] Requesting issue: https://jira.dev/rest/api/2/issue/5711
 [+] Requesting issue: https://jira.dev/rest/api/2/issue/5712
@@ -132,7 +132,7 @@ Please do the following steps:
 The `braumeister` will stay in the current release branch to let you resolve the conflict. After the conflict has been resolved, you can rerun the `braumeister` with `-r` to resume where we stopped.
 
 ```sh
-$ braumeister -v "Barking Dog" -r candidate
+$ braumeister -n "Barking Dog" -r candidate
 Reading state json!
 Resuming with feature-1
 [🍻 ] Merging feature-1...
@@ -152,7 +152,7 @@ Deleting state json!
 
 #### New release candidate
 ```sh
-$ braumeister -v "Barking Dog" candidate
+$ braumeister -n "Barking Dog" candidate
 [*] Requesting all issues with fixVersion: Barking Dog
 [+] Requesting issue: https://jira.dev/rest/api/2/issue/5711
 [+] Creating new branch 'release/Barking_Dog_RC_001' from master
@@ -171,7 +171,7 @@ Switched to a new branch 'release/Barking_Dog_RC_001'
 When you execute the `braumeister` with the same release name again, a new release candidate will be created (increasing the `RC` part with 1).
 
 ```sh
-$ braumeister -v "Barking Dog" candidate
+$ braumeister -n "Barking Dog" candidate
 [*] Requesting all issues with fixVersion: Barking Dog
 [+] Requesting issue: https://jira.dev/rest/api/2/issue/5711
 [+] The last branch for RC Barking Dog is: release/Barking_Dog_RC_001
@@ -191,7 +191,7 @@ Switched to a new branch 'release/Barking_Dog_RC_002'
 Executing the `braumeister` with `-u` will also execute the configured transition on all related issues.
 
 ```sh
-$ braumeister -v "Barking Dog" -u candidate
+$ braumeister -n "Barking Dog" -u candidate
 [*] Requesting all issues with fixVersion: Barking Dog
 [+] Requesting issue: https://jira.dev/rest/api/2/issue/31300
 [+] Requesting issue: https://jira.dev/rest/api/2/issue/30209
@@ -224,7 +224,7 @@ Updating jira status on DEV-2 to Staging Needed
 
 #### New release
 ```sh
-$ braumeister -v "Barking Dog" release
+$ braumeister -n "Barking Dog" release
 [*] Requesting all issues with fixVersion: Barking Dog
 [+] Requesting issue: https://jira.dev/rest/api/2/issue/5711
 [+] Creating new branch 'release/Barking_Dog_GA' from master
@@ -244,7 +244,7 @@ When you execute the `braumeister` with the `finalize` action it will merge the 
 THIS CHANGES YOUR REMOTE REPOSITORY, HANDLE WITH CARE!
 
 ```sh
-$ braumeister -v "Barking Dog" finalize
+$ braumeister -n "Barking Dog" finalize
 [+] Merging branch 'release/Barking_Dog_GA' to origin/master
 
 [🍻 ] Merging release/Barking_Dog_GA...
@@ -259,10 +259,10 @@ When you execute the `braumeister` with the `cleanup` action it will delete all 
 THIS CHANGES YOUR REMOTE REPOSITORY, HANDLE WITH CARE!
 
 ```sh
-$ braumeister -v "Barking Dog" cleanup
+$ braumeister -n "Barking Dog" cleanup
 [+] Cleaning up after release of Barking Dog
 
-[🍻 ] Deleting origin/feature-fifty...
+[🍻 ] Deleting origin/feature-nifty...
 [🍻 ] Deleting origin/feature-seven...
 [🍻 ] Deleting origin/feature-eleven...
 
