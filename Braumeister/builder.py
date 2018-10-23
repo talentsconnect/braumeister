@@ -5,6 +5,7 @@ from .actions.candidate import Candidate
 from .actions.release import Release
 from .actions.finalize import Finalize
 from .actions.cleanup import Cleanup
+from .actions.nightly import Nightly
 
 class Builder:
 
@@ -16,7 +17,9 @@ class Builder:
 
     def execute(self):
         action = None
-        if ('candidate' == self.action):
+        if ('nightly' == self.action):
+            action = Nightly(self.fix_version, self.resume, self.update_jira)
+        elif ('candidate' == self.action):
             action = Candidate(self.fix_version, self.resume, self.update_jira)
         elif ('release' == self.action):
             action = Release(self.fix_version, self.resume, self.update_jira)
