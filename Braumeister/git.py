@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import subprocess
+import datetime
 import sys
 
 from colorama import Fore
@@ -39,6 +40,20 @@ class Git:
             print(Fore.RED + "[-] " + Fore.RESET + "Please commit and call the script again!")
             if (not Settings.is_dry_run()):
                 sys.exit(1)
+
+    @staticmethod
+    def create_nightly_branch(fix_version):
+        current = Git.find_candidate_branch_name(fix_version)
+        date = datetime.date.today().strftime("%Y_%m_%d")
+
+        num = 0
+        if current:
+            num = int(current[-3:]) + 1
+
+        new_branch_name = "nightly/" + fix_version.replace(" ", "_") + "_" + date + "__" + format(num, '03d')
+
+        Git.create_new_branch_from_master(new_branch_name)
+        return new_branch_name
 
     @staticmethod
     def create_candidate_branch(fix_version):
@@ -80,7 +95,7 @@ class Git:
             output = subprocess.check_output(('grep', fix_version.replace(" ", "_")), stdin=process.stdout, stderr=process.stdout)
 
             process.communicate()
-        except Exception as e:
+        except Exception as _:
             return ""
 
         existing_branches = []
