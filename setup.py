@@ -1,5 +1,6 @@
 import os
 import re
+
 from setuptools import setup
 
 version = re.search(
@@ -8,12 +9,14 @@ version = re.search(
     re.M
 ).group(1)
 
+
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
+
 setup(
     name="braumeister",
-    packages = ["braumeister", "braumeister.actions"],
+    packages=["braumeister", "braumeister.actions"],
     version=version,
     author="Marcel Steffen",
     author_email="marcel@talentsconnect.com",
