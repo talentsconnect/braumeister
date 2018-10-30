@@ -22,7 +22,7 @@ class Core:
 
         parser.add_argument(
             'action',
-            choices=['init', 'candidate', 'release', 'finalize', 'cleanup']
+            choices=['init', 'nightly', 'candidate', 'release', 'finalize', 'cleanup']
         )
 
         parser.add_argument(

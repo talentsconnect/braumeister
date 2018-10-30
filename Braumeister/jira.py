@@ -123,7 +123,7 @@ class Jira:
 
         try:
             return json.loads(response.text)
-        except ValueError as error:
+        except ValueError as _:
             return None
 
     @staticmethod
@@ -141,5 +141,5 @@ class Jira:
 
         try:
             return json.loads(response.text)
-        except ValueError as error:
+        except ValueError as _:
             return None
