@@ -6,6 +6,7 @@ from .core import Core
 
 __version__ = "0.3.0"
 
+
 def main():
     b = Core()
     b.bootstap()

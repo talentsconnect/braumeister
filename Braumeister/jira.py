@@ -2,11 +2,13 @@
 # -*- coding: utf-8 -*-
 
 import json
+import collections
 
 import requests
 from colorama import Fore
 
 from .settings import Settings
+
 
 class Jira:
 
@@ -32,13 +34,15 @@ class Jira:
             # e.g. customfield_11219
 
             if not custom_field_name in obj["fields"]:
-                raise ValueError("Missing %s in jira custom fields. Are you sure the name is %s? I've found these: \n%s" % (
-                    custom_field_name, custom_field_name, ", ".join(obj["fields"])))
+                raise ValueError(
+                    "Missing %s in jira custom fields. Are you sure the name is %s? I've found these: \n%s" % (
+                        custom_field_name, custom_field_name, ", ".join(obj["fields"])))
 
             key = obj["fields"][custom_field_name]
 
             if not key:
-                print(Fore.YELLOW + "[~] " + Fore.RESET + "Ticket with empty branch field found: %s - Ignoring." % issue)
+                print(
+                    Fore.YELLOW + "[~] " + Fore.RESET + "Ticket with empty branch field found: %s - Ignoring." % issue)
                 continue
 
             if key in branches:
@@ -53,7 +57,8 @@ class Jira:
 
     @staticmethod
     def get_relevant_issues(fix_version):
-        print(Fore.GREEN + "[*] " + Fore.RESET + "Requesting all issues with fixVersion: " + Fore.GREEN + fix_version + Fore.RESET)
+        print(
+            Fore.GREEN + "[*] " + Fore.RESET + "Requesting all issues with fixVersion: " + Fore.GREEN + fix_version + Fore.RESET)
 
         jira_url = Settings.get("jira", "url", None)
 
@@ -119,7 +124,8 @@ class Jira:
             raise ValueError(
                 "Missing 'password' in 'jira' section. Please run 'braumeister init'")
 
-        response = requests.post(url, data=data, auth=(jira_user, jira_password), headers={'content-type': 'application/json'})
+        response = requests.post(url, data=data, auth=(jira_user, jira_password),
+                                 headers={'content-type': 'application/json'})
 
         try:
             return json.loads(response.text)
