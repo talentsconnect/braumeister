@@ -18,6 +18,7 @@ class Candidate:
         self.update_jira = update_jira
 
     def execute(self):
+        Git.check_git_rerere()
         Git.check_working_directory()
         Git.check_git_state()
 
