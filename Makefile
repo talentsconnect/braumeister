@@ -11,6 +11,10 @@ test:
 	python3 -m unittest Braumeister/tests/*_test.py
 	@make clean
 
+publish_test:
+	python3 setup.py sdist bdist_wheel
+	python3 -m twine upload --repository-url https://test.pypi.org/legacy/ dist/*
+
 usage:
 	@echo ""
 	@echo "make"
