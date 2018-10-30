@@ -53,7 +53,7 @@ class Jira:
                 value.append(issue)
                 branches[key] = value
 
-        return branches
+        return collections.OrderedDict(sorted(branches.items()))
 
     @staticmethod
     def get_relevant_issues(fix_version):
