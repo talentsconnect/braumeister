@@ -235,7 +235,7 @@ class Git:
 
     @staticmethod
     def check_git_rerere():
-        state = Git.get_config("rerere.enabled")
+        state = Git.get_config_or_default("rerere.enabled", "false")
 
         if Settings.get("general", "verbose", False):
             print("git rerere state: '%s'" % state)
@@ -250,8 +250,11 @@ class Git:
             print(Fore.YELLOW + "[*] ========================================================" + Fore.RESET)
 
     @staticmethod
-    def get_config(key):
-        return Git.call_git_command(["git", "config", "--get", key])
+    def get_config_or_default(key, default_value):
+        try:
+            return Git.call_git_command(["git", "config", "--get", key])
+        except ValueError:
+            return default_value
 
     @staticmethod
     def call_git_command(param):
@@ -266,7 +269,8 @@ class Git:
             print(stdout.decode("utf-8"))
 
         if process.returncode != 0:
-            raise ValueError('Error after calling git command', process.returncode)
+            raise ValueError('Error after calling git command (return code: %s): %s' %
+                             (process.returncode, ' '.join(param)), process.returncode)
 
         return stdout.decode("utf-8").strip()
 
