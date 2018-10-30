@@ -18,7 +18,8 @@ class Core:
         version = pkg_resources.require("braumeister")[0].version
 
         parser = argparse.ArgumentParser(
-            description='Create (or finish up) a release (candidate) branch based on the "fixVersion" field in JIRA and your `master` branch. (v' + version + ")")
+            description='Create (or finish up) a release (candidate) branch based on the "fixVersion" '
+                        'field in JIRA and your `master` branch. (v' + version + ")")
 
         parser.add_argument(
             'action',
@@ -78,6 +79,6 @@ class Core:
         except ValueError as error:
             print(Fore.RED + "[-] " + Fore.RESET + "Error: " + error.args[0])
         except AttributeError as error:
-            print(Fore.RED + "[-] " + Fore.RESET + "Error: operation '" + args.action +  "' not supported")
+            print(Fore.RED + "[-] " + Fore.RESET + "Error: operation '" + args.action + "' not supported")
         except Exception as error:
             print(Fore.RED + "[-] " + Fore.RESET + "Error: " + str(error))

@@ -234,6 +234,26 @@ class Git:
             Git.call_git_command(["git", "push", "-u", "origin", branch_name])
 
     @staticmethod
+    def check_git_rerere():
+        state = Git.get_config("rerere.enabled")
+
+        if Settings.get("general", "verbose", False):
+            print("git rerere state: '%s'" % state)
+
+        if "true" != str(state):
+            print(Fore.YELLOW + "[*] ========================================================" + Fore.RESET)
+            print(Fore.YELLOW + "[*] It looks like 'git rerere' is not currently enabled!" + Fore.RESET)
+            print(Fore.YELLOW + "[*] We strongly recommend to enable this setting via" + Fore.RESET)
+            print(Fore.YELLOW + "[*]     git config --global rerere.enabled true" + Fore.RESET)
+            print(Fore.YELLOW + "[*] You can find more information about this here:" + Fore.RESET)
+            print(Fore.YELLOW + "[*]     https://www.git-scm.com/book/en/v2/Git-Tools-Rerere" + Fore.RESET)
+            print(Fore.YELLOW + "[*] ========================================================" + Fore.RESET)
+
+    @staticmethod
+    def get_config(key):
+        return Git.call_git_command(["git", "config", "--get", key])
+
+    @staticmethod
     def call_git_command(param):
         if Settings.get("general", "verbose", False):
             print(Fore.GREEN + "[+] " + Fore.RESET + "Calling: " + Fore.BLUE + " ".join(param) + Fore.RESET)
@@ -247,6 +267,8 @@ class Git:
 
         if process.returncode != 0:
             raise ValueError('Error after calling git command', process.returncode)
+
+        return stdout.decode("utf-8").strip()
 
 
 class GitException(Exception):
