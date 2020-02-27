@@ -161,7 +161,11 @@ class Git:
                 if code == 0:
                     code = 1
                     if not Settings.is_dry_run():
-                        Git.call_git_command(["git", "checkout", current_branch])
+                        Git.call_git_command(["git", "checkout", current_branch.base_branch])
+                        Git.call_git_command(["git", "pull"])
+                        Git.call_git_command(["git", "merge", "origin/master"])
+                        Git.call_git_command(["git", "push", "origin", current_branch.base_branch])
+                        Git.call_git_command(["git", "checkout", current_branch.branch])
 
                 if code == 1:
                     code = 2
@@ -171,7 +175,7 @@ class Git:
                 if code == 2:
                     code = 3
                     if not Settings.is_dry_run():
-                        Git.call_git_command(["git", "merge", "origin/master"])
+                        Git.call_git_command(["git", "merge", current_branch.base_branch])
 
                 if code == 3:
                     code = 4

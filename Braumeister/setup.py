@@ -31,6 +31,7 @@ class Setup:
         self.jira_pass = ""
         self.jira_destination_transition = ""
         self.jira_branch_field_id = ""
+        self.jira_base_branch_field_id = ""
 
     def print_success(self, message):
         print("%s[*]%s %s" % (Fore.GREEN, Fore.RESET, message))
@@ -94,6 +95,11 @@ class Setup:
             "Please enter a custom field id"
         )
 
+        self.jira_base_branch_field_id = self.ask_required(
+            "Custom Field Id for 'Base Branch'",
+            "Please enter a custom field id"
+        )
+
         self.jira_destination_transition = self.ask_optional(
             "Destination Transiton Name"
         )
@@ -121,6 +127,8 @@ class Setup:
                       self.jira_destination_transition)
         Settings.save("jira", "branch_custom_field_id",
                       self.jira_branch_field_id)
+        Settings.save("jira", "base_branch_custom_field_id",
+                      self.jira_base_branch_field_id)
 
         print()
         self.print_success("Thank you.")

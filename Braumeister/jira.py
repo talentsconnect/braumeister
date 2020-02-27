@@ -3,29 +3,35 @@
 
 import json
 import collections
-
 import requests
-from colorama import Fore
 
+from colorama import Fore
 from .settings import Settings
+from .Branch import Branch
 
 
 class Jira:
-
     @staticmethod
     def get_feature_branches(fix_version):
         json_object = Jira.get_relevant_issues(fix_version)
-        branches = {}
+        base_branches = {}
 
         if not "issues" in json_object:
             return {}
 
-        custom_field_name = Settings.get(
+        branch_field_name = Settings.get(
             "jira", "branch_custom_field_id", None)
 
-        if not custom_field_name:
+        if not branch_field_name:
             raise ValueError(
                 "Missing 'branch_custom_field_id' in 'jira' section. Please run 'braumeister init'")
+
+        base_branch_field_name = Settings.get(
+            "jira", "base_branch_custom_field_id", None)
+
+        if not base_branch_field_name:
+            raise ValueError(
+                "Missing 'base_branch_custom_field_id' in 'jira' section. Please run 'braumeister init'")
 
         for issue in json_object["issues"]:
             obj = Jira.get_specific_issue(issue["self"])
@@ -33,27 +39,34 @@ class Jira:
             issue = obj["key"]
             # e.g. customfield_11219
 
-            if not custom_field_name in obj["fields"]:
+            if not branch_field_name in obj["fields"]:
                 raise ValueError(
                     "Missing %s in jira custom fields. Are you sure the name is %s? I've found these: \n%s" % (
-                        custom_field_name, custom_field_name, ", ".join(obj["fields"])))
+                        branch_field_name, branch_field_name, ", ".join(obj["fields"])))
 
-            key = obj["fields"][custom_field_name]
+            branch_key = obj["fields"][branch_field_name]
 
-            if not key:
+            if not branch_key:
                 print(
                     Fore.YELLOW + "[~] " + Fore.RESET + "Ticket with empty branch field found: %s - Ignoring." % issue)
                 continue
 
-            if key in branches:
-                issues = branches[key]
-                issues.append(issue)
-                branches[key] = issues
-            else:
-                value.append(issue)
-                branches[key] = value
+            base_branch_key = obj["fields"][base_branch_field_name]
 
-        return collections.OrderedDict(sorted(branches.items()))
+            if not base_branch_key:
+                print(
+                    Fore.YELLOW + "[~] " + Fore.RESET + "Ticket with no base branch field found: %s - assuming master." % issue)
+                base_branch_key = "master"
+
+            if base_branch_key in base_branches:
+                issues = base_branches[base_branch_key]
+                issues.append(Branch(issue[branch_key], issue[base_branch_key]))
+                base_branches[base_branch_key] = issues
+            else:
+                value.append(Branch(issue[branch_key], issue[base_branch_key]))
+                base_branches[base_branch_key] = value
+
+        return collections.OrderedDict(sorted(base_branches.items()))
 
     @staticmethod
     def get_relevant_issues(fix_version):
