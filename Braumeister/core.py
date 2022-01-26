@@ -1,13 +1,13 @@
 import argparse
 import sys
 
-import pkg_resources
 from colorama import init, Fore
 
 from .builder import Builder
 from .settings import Settings
 from .setup import Setup
 
+__version__ = "0.4.1"
 
 class Core:
 
@@ -15,11 +15,11 @@ class Core:
         init()
 
     def bootstap(self):
-        version = pkg_resources.require("braumeister")[0].version
+        #version = pkg_resources.require("braumeister")[0].version
 
         parser = argparse.ArgumentParser(
             description='Create (or finish up) a release (candidate) branch based on the "fixVersion" '
-                        'field in JIRA and your `master` branch. (v' + version + ")")
+                        'field in JIRA and your `main` branch. (v' + __version__ + ")")
 
         parser.add_argument(
             'action',
@@ -80,5 +80,6 @@ class Core:
             print(Fore.RED + "[-] " + Fore.RESET + "Error: " + error.args[0])
         except AttributeError as error:
             print(Fore.RED + "[-] " + Fore.RESET + "Error: operation '" + args.action + "' not supported")
+            print(f"Error: {error}")
         except Exception as error:
             print(Fore.RED + "[-] " + Fore.RESET + "Error: " + str(error))

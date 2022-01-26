@@ -5,7 +5,7 @@ from setuptools import setup
 
 version = re.search(
     '^__version__\s*=\s*"(.*)"',
-    open('braumeister/braumeister.py').read(),
+    open('braumeister/core.py').read(),
     re.M
 ).group(1)
 

@@ -11,34 +11,48 @@ from .settings import Settings
 
 
 class Git:
-
     @staticmethod
     def check_working_directory():
         pipe = subprocess.PIPE
-        process = subprocess.Popen(['git', 'status'], stdout=pipe, stderr=pipe)
+        process = subprocess.Popen(["git", "status"], stdout=pipe, stderr=pipe)
         _, stderroutput = process.communicate()
 
         if not process.returncode == 0:
             if Settings.get("general", "verbose", False):
                 print(stderroutput.decode("utf-8"))
 
-            print(Fore.RED + "[-] " + Fore.RESET + "Please call the script from within your git directory")
-            if (not Settings.is_dry_run()):
+            print(
+                Fore.RED
+                + "[-] "
+                + Fore.RESET
+                + "Please call the script from within your git directory"
+            )
+            if not Settings.is_dry_run():
                 sys.exit(1)
 
     @staticmethod
     def check_git_state():
         pipe = subprocess.PIPE
-        process = subprocess.Popen(['git', 'status', "-s"], stdout=pipe, stderr=pipe)
+        process = subprocess.Popen(["git", "status", "-s"], stdout=pipe, stderr=pipe)
         stdoutput, _ = process.communicate()
 
         if len(stdoutput.splitlines()) != 0:
             if Settings.get("general", "verbose", False):
                 print(stdoutput.decode("utf-8"))
 
-            print(Fore.RED + "[-] " + Fore.RESET + "There are uncommited changes in your current branch.")
-            print(Fore.RED + "[-] " + Fore.RESET + "Please commit and call the script again!")
-            if (not Settings.is_dry_run()):
+            print(
+                Fore.RED
+                + "[-] "
+                + Fore.RESET
+                + "There are uncommited changes in your current branch."
+            )
+            print(
+                Fore.RED
+                + "[-] "
+                + Fore.RESET
+                + "Please commit and call the script again!"
+            )
+            if not Settings.is_dry_run():
                 sys.exit(1)
 
     @staticmethod
@@ -50,9 +64,16 @@ class Git:
         if current:
             num = int(current[-3:]) + 1
 
-        new_branch_name = "nightly/" + fix_version.replace(" ", "_") + "_" + date + "__" + format(num, '03d')
+        new_branch_name = (
+            "nightly/"
+            + fix_version.replace(" ", "_")
+            + "_"
+            + date
+            + "__"
+            + format(num, "03d")
+        )
 
-        Git.create_new_branch_from_master(new_branch_name)
+        Git.create_new_branch_from_main(new_branch_name)
         return new_branch_name
 
     @staticmethod
@@ -63,26 +84,41 @@ class Git:
         if current:
             next_rc = int(current[-3:]) + 1
 
-        new_branch_name = "release/" + fix_version.replace(" ", "_") + "_RC_" + format(next_rc, '03d')
+        new_branch_name = (
+            "release/" + fix_version.replace(" ", "_") + "_RC_" + format(next_rc, "03d")
+        )
 
-        Git.create_new_branch_from_master(new_branch_name)
+        Git.create_new_branch_from_main(new_branch_name)
         return new_branch_name
 
     @staticmethod
     def create_release_branch(fix_version):
         new_branch_name = Git.find_release_branch_name(fix_version)
 
-        Git.create_new_branch_from_master(new_branch_name)
+        Git.create_new_branch_from_main(new_branch_name)
         return new_branch_name
 
     @staticmethod
-    def create_new_branch_from_master(new_branch_name):
-        print(Fore.GREEN + "[+] " + Fore.RESET + "Creating new branch '" +
-              Fore.GREEN + new_branch_name + Fore.RESET + "' from master")
+    def create_new_branch_from_main(new_branch_name):
+        main_branch_name = Settings.get("git", "main_branch_name", "master")
 
-        if (not Settings.is_dry_run()):
+        print(
+            Fore.GREEN
+            + "[+] "
+            + Fore.RESET
+            + "Creating new branch '"
+            + Fore.GREEN
+            + new_branch_name
+            + Fore.RESET
+            + "' from "
+            + main_branch_name
+        )
+
+        if not Settings.is_dry_run():
             print(Fore.BLUE)
-            subprocess.call(["git", "checkout", "-b", new_branch_name, "origin/master"])
+            subprocess.call(
+                ["git", "checkout", "-b", new_branch_name, "origin/" + main_branch_name]
+            )
             print(Fore.RESET)
 
     @staticmethod
@@ -92,9 +128,14 @@ class Git:
         pipe = subprocess.PIPE
 
         try:
-            process = subprocess.Popen(['git', 'branch', '-a', '--no-color'], stdout=pipe, stderr=pipe)
-            output = subprocess.check_output(('grep', fix_version.replace(" ", "_")), stdin=process.stdout,
-                                             stderr=process.stdout)
+            process = subprocess.Popen(
+                ["git", "branch", "-a", "--no-color"], stdout=pipe, stderr=pipe
+            )
+            output = subprocess.check_output(
+                ("grep", fix_version.replace(" ", "_")),
+                stdin=process.stdout,
+                stderr=process.stdout,
+            )
 
             process.communicate()
         except Exception as _:
@@ -104,12 +145,24 @@ class Git:
         for line in output.splitlines():
             existing_branches.append(line.decode("utf-8"))
 
-        highest_existing_branch_name = Git.get_max_candidate_branch_name(existing_branches)
+        highest_existing_branch_name = Git.get_max_candidate_branch_name(
+            existing_branches
+        )
         if not highest_existing_branch_name:
-            print(Fore.YELLOW + "[*] " + Fore.RESET + "There is no existing RC for release %s" % fix_version)
+            print(
+                Fore.YELLOW
+                + "[*] "
+                + Fore.RESET
+                + "There is no existing RC for release %s" % fix_version
+            )
         else:
-            print(Fore.GREEN + "[+] " + Fore.RESET + "The last branch for RC %s is: %s" % (
-                fix_version, highest_existing_branch_name))
+            print(
+                Fore.GREEN
+                + "[+] "
+                + Fore.RESET
+                + "The last branch for RC %s is: %s"
+                % (fix_version, highest_existing_branch_name)
+            )
 
         return highest_existing_branch_name
 
@@ -136,7 +189,7 @@ class Git:
     @staticmethod
     def get_current_branch():
         pipe = subprocess.PIPE
-        process = subprocess.Popen(['git', 'status'], stdout=pipe, stderr=pipe)
+        process = subprocess.Popen(["git", "status"], stdout=pipe, stderr=pipe)
         stdoutput, _ = process.communicate()
 
         stdoutput = stdoutput.decode("utf-8")
@@ -171,7 +224,8 @@ class Git:
                 if code == 2:
                     code = 3
                     if not Settings.is_dry_run():
-                        Git.call_git_command(["git", "merge", "origin/master"])
+                        main_branch_name = Settings.get("git", "main_branch_name", "master")
+                        Git.call_git_command(["git", "merge", f"origin/{main_branch_name}"])
 
                 if code == 3:
                     code = 4
@@ -193,8 +247,15 @@ class Git:
                     if (not Settings.is_dry_run()):
                         Git.call_git_command(["git", "branch", "-D", current_branch])
                     print(
-                        Fore.GREEN + "[🍻 ] " + Fore.RESET + "Branch '" + Fore.GREEN + current_branch + Fore.RESET +
-                        "' merged")
+                        Fore.GREEN
+                        + "[🍻 ] "
+                        + Fore.RESET
+                        + "Branch '"
+                        + Fore.GREEN
+                        + current_branch
+                        + Fore.RESET
+                        + "' merged"
+                    )
                     print("")
             except ValueError as _:
                 raise GitException(current_branch, code)
@@ -208,22 +269,37 @@ class Git:
                 if Settings.get("general", "verbose", False):
                     print("------------------------------------")
 
-                print(Fore.GREEN + "[🍻 ] " + Fore.RESET + "Deleting %s..." % current_branch)
+                print(
+                    Fore.GREEN
+                    + "[🍻 ] "
+                    + Fore.RESET
+                    + "Deleting %s..." % current_branch
+                )
 
                 if not Settings.is_dry_run():
                     try:
-                        Git.call_git_command(["git", "push", "origin", ":" + current_branch])
+                        Git.call_git_command(
+                            ["git", "push", "origin", ":" + current_branch]
+                        )
                     except Exception as _:
                         print(
-                            Fore.YELLOW + "[*] " + Fore.RESET + "Error ocurred while deleting remote branch %s, "
-                                                                "please verify deletion manually" % current_branch)
+                            Fore.YELLOW
+                            + "[*] "
+                            + Fore.RESET
+                            + "Error ocurred while deleting remote branch %s, "
+                            "please verify deletion manually" % current_branch
+                        )
 
                     try:
                         Git.call_git_command(["git", "branch", "-D", current_branch])
                     except Exception as _:
                         print(
-                            Fore.YELLOW + "[*] " + Fore.RESET + "Error ocurred while deleting local branch %s, "
-                                                                "please verify deletion manually" % current_branch)
+                            Fore.YELLOW
+                            + "[*] "
+                            + Fore.RESET
+                            + "Error ocurred while deleting local branch %s, "
+                            "please verify deletion manually" % current_branch
+                        )
 
             except ValueError as e:
                 raise GitException(current_branch, 0)
@@ -241,13 +317,41 @@ class Git:
             print("git rerere state: '%s'" % state)
 
         if "true" != str(state):
-            print(Fore.YELLOW + "[*] ========================================================" + Fore.RESET)
-            print(Fore.YELLOW + "[*] It looks like 'git rerere' is not currently enabled!" + Fore.RESET)
-            print(Fore.YELLOW + "[*] We strongly recommend to enable this setting via" + Fore.RESET)
-            print(Fore.YELLOW + "[*]     git config --global rerere.enabled true" + Fore.RESET)
-            print(Fore.YELLOW + "[*] You can find more information about this here:" + Fore.RESET)
-            print(Fore.YELLOW + "[*]     https://www.git-scm.com/book/en/v2/Git-Tools-Rerere" + Fore.RESET)
-            print(Fore.YELLOW + "[*] ========================================================" + Fore.RESET)
+            print(
+                Fore.YELLOW
+                + "[*] ========================================================"
+                + Fore.RESET
+            )
+            print(
+                Fore.YELLOW
+                + "[*] It looks like 'git rerere' is not currently enabled!"
+                + Fore.RESET
+            )
+            print(
+                Fore.YELLOW
+                + "[*] We strongly recommend to enable this setting via"
+                + Fore.RESET
+            )
+            print(
+                Fore.YELLOW
+                + "[*]     git config --global rerere.enabled true"
+                + Fore.RESET
+            )
+            print(
+                Fore.YELLOW
+                + "[*] You can find more information about this here:"
+                + Fore.RESET
+            )
+            print(
+                Fore.YELLOW
+                + "[*]     https://www.git-scm.com/book/en/v2/Git-Tools-Rerere"
+                + Fore.RESET
+            )
+            print(
+                Fore.YELLOW
+                + "[*] ========================================================"
+                + Fore.RESET
+            )
 
     @staticmethod
     def get_config_or_default(key, default_value):
@@ -269,8 +373,11 @@ class Git:
             print(stdout.decode("utf-8"))
 
         if process.returncode != 0:
-            raise ValueError('Error after calling git command (return code: %s): %s' %
-                             (process.returncode, ' '.join(param)), process.returncode)
+            raise ValueError(
+                "Error after calling git command (return code: %s): %s"
+                % (process.returncode, " ".join(param)),
+                process.returncode,
+            )
 
         return stdout.decode("utf-8").strip()
 

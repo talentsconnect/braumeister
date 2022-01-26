@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+from email.policy import default
 import os
 import getpass
 from colorama import Fore
@@ -31,6 +32,7 @@ class Setup:
         self.jira_pass = ""
         self.jira_destination_transition = ""
         self.jira_branch_field_id = ""
+        self.git_main_branch_name = "master"
 
     def print_success(self, message):
         print("%s[*]%s %s" % (Fore.GREEN, Fore.RESET, message))
@@ -58,12 +60,27 @@ class Setup:
 
         return answer
 
-    def ask_optional(self, question):
-        return self.print_question("%s (optional)" % question)
+    def ask_optional(self, question, default=None):
+        answer = self.print_question("%s (optional)" % question)
+        if answer == "" and default != None:
+            return default
+        return answer
 
     def url_validator(self, url):
         """ checks if the given url starts with 'http' """
         return url.startswith("http")
+
+    def ask_git(self):
+        """"""
+        print()
+        self.print_success("Git Configuration")
+        self.print_success("----------------------")
+        print()
+
+        self.git_main_branch_name = self.ask_optional(
+            "Main branch name [master]",
+            default=self.git_main_branch_name
+        )
 
     def ask_jira(self):
         """ Asking questions about the jira configuration """
@@ -110,10 +127,12 @@ class Setup:
         print("\t Please answer the following questions:")
         print()
 
+        self.ask_git()
         self.ask_jira()
 
         print()
 
+        Settings.save("git", "main_branch_name", self.git_main_branch_name)
         Settings.save("jira", "url", self.jira_url)
         Settings.save("jira", "username", self.jira_user)
         Settings.save("jira", "password", self.jira_pass)
