@@ -40,6 +40,7 @@ username = my-user
 password = secret
 destination_transition = Merged
 branch_custom_field_id = customfield_5711
+base_branch_custom_field_id = customfield_5712
 ```
 
 |Section|key|default value|description|
