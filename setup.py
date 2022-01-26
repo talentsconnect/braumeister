@@ -22,6 +22,7 @@ setup(
     author_email="marcel@talentsconnect.com",
     description="Easy release bulding, combining JIRA and git",
     long_description=read('README.md'),
+    long_description_content_type="text/markdown",
     license="MIT",
     keywords="git jira release",
     url="https://www.talentsconnect.com",
