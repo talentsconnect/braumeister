@@ -243,7 +243,7 @@ Switched to a new branch 'release/Barking_Dog_GA'
 ```
 
 #### Finalize a release
-When you execute the `braumeister` with the `finalize` action it will merge the given branch back to `origin/master`. 
+When you execute the `braumeister` with the `finalize` action it will merge the given branch back to define main branch (e.g. `origin/main`).
 
 THIS CHANGES YOUR REMOTE REPOSITORY, HANDLE WITH CARE!
 
