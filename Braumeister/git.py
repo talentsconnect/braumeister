@@ -162,7 +162,7 @@ class Git:
                     # we first merge all the base branches before we start with the actual ticket branch
                     for base_branch in current_branch.base_branches:
                         if not start_branch != base_branch:
-                            start_branch = Git.mergeBaseBranch(start_branch, base_branch)
+                            start_branch = Git.merge_base_branch(start_branch, base_branch)
 
                 if code == 1:
                     code = 2
@@ -283,7 +283,7 @@ class Git:
         return stdout.decode("utf-8").strip()
 
     @classmethod
-    def mergeBaseBranch(cls, source_branch, target_branch):
+    def merge_base_branch(cls, source_branch, target_branch):
         print(Fore.GREEN + "[🍻 ] " + Fore.RESET +
               "Merging %s into %s..." % (source_branch, target_branch))
         Git.call_git_command(["git", "checkout", target_branch])
