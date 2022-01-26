@@ -51,9 +51,6 @@ base_branch_custom_field_id = customfield_5712
 |jira|password|None|The password for the user|
 |jira|destination_transition|None|Workflow Transition name for the ticket after merging, if executed with `-u`|
 |jira|branch_custom_field_id|None|The JIRA Custom Field where we should read the branch from|
-|jira|base_branch_custom_field_id|None|The JIRA CustomField where we should read branch from which the branch was forked|
-
-If the base branch is not set, we assume **master** as base branch.
 
 We'll be looking for a configuration file at the following places
 ```

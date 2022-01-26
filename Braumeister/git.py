@@ -155,44 +155,43 @@ class Git:
                 if Settings.get("general", "verbose", False):
                     print("------------------------------------")
 
-                start_branch = "master"
+                print(Fore.GREEN + "[🍻 ] " + Fore.RESET +
+                      "Merging %s into %s..." % (current_branch, target_branch))
 
                 if code == 0:
                     code = 1
-                    # we first merge all the base branches before we start with the actual ticket branch
-                    for base_branch in current_branch.base_branches:
-                        if not start_branch != base_branch:
-                            start_branch = Git.merge_base_branch(start_branch, base_branch)
+                    if not Settings.is_dry_run():
+                        Git.call_git_command(["git", "checkout", current_branch])
 
                 if code == 1:
                     code = 2
-                    Git.call_git_command(["git", "checkout", current_branch.branch])
+                    if not Settings.is_dry_run():
+                        Git.call_git_command(["git", "pull"])
 
                 if code == 2:
                     code = 3
-                    Git.call_git_command(["git", "pull"])
+                    if not Settings.is_dry_run():
+                        Git.call_git_command(["git", "merge", "origin/master"])
 
                 if code == 3:
                     code = 4
-                    print(Fore.GREEN + "[🍻 ] " + Fore.RESET +
-                          "Merging %s into %s..." % (current_branch.branch, target_branch))
-                    Git.call_git_command(["git", "merge", start_branch])
+                    if not Settings.is_dry_run():
+                        Git.call_git_command(["git", "push", "origin", current_branch])
 
                 if code == 4:
                     code = 5
-                    Git.call_git_command(["git", "push", "origin", current_branch.branch])
+                    if not Settings.is_dry_run():
+                        Git.call_git_command(["git", "checkout", target_branch])
 
                 if code == 5:
                     code = 6
-                    Git.call_git_command(["git", "checkout", target_branch])
+                    if not Settings.is_dry_run():
+                        Git.call_git_command(["git", "merge", "origin/" + current_branch])
 
                 if code == 6:
-                    code = 7
-                    Git.call_git_command(["git", "merge", "origin/" + current_branch.branch])
-
-                if code == 7:
                     code = 0
-                    Git.call_git_command(["git", "branch", "-D", current_branch.branch])
+                    if (not Settings.is_dry_run()):
+                        Git.call_git_command(["git", "branch", "-D", current_branch])
                     print(
                         Fore.GREEN + "[🍻 ] " + Fore.RESET + "Branch '" + Fore.GREEN + current_branch + Fore.RESET +
                         "' merged")
@@ -252,22 +251,15 @@ class Git:
 
     @staticmethod
     def get_config_or_default(key, default_value):
-        if not Settings.is_dry_run():
-            try:
-                return Git.call_git_command(["git", "config", "--get", key])
-            except ValueError:
-                return default_value
-
-        else:
-            return "true"
+        try:
+            return Git.call_git_command(["git", "config", "--get", key])
+        except ValueError:
+            return default_value
 
     @staticmethod
     def call_git_command(param):
-        if Settings.get("general", "verbose", False) or Settings.is_dry_run():
+        if Settings.get("general", "verbose", False):
             print(Fore.GREEN + "[+] " + Fore.RESET + "Calling: " + Fore.BLUE + " ".join(param) + Fore.RESET)
-
-        if Settings.is_dry_run():
-            return "dryrun"
 
         pipe = subprocess.PIPE
         process = subprocess.Popen(param, stdout=pipe, stderr=pipe)
@@ -281,16 +273,6 @@ class Git:
                              (process.returncode, ' '.join(param)), process.returncode)
 
         return stdout.decode("utf-8").strip()
-
-    @classmethod
-    def merge_base_branch(cls, source_branch, target_branch):
-        print(Fore.GREEN + "[🍻 ] " + Fore.RESET +
-              "Merging %s into %s..." % (source_branch, target_branch))
-        Git.call_git_command(["git", "checkout", target_branch])
-        Git.call_git_command(["git", "pull"])
-        Git.call_git_command(["git", "merge", source_branch])
-        Git.call_git_command(["git", "push", "origin", target_branch])
-        return target_branch
 
 
 class GitException(Exception):
