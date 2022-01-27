@@ -34,6 +34,9 @@ The `braumeister` will create a `.braumeister` configuration file in the current
 [general]
 verbose = false
 
+[git]
+main_branch_name = main
+
 [jira]
 url = https://jira.dev
 username = my-user
@@ -45,6 +48,7 @@ branch_custom_field_id = customfield_5711
 |Section|key|default value|description|
 |-------|---|-----|---|
 |general|verbose|false|Verbose output|
+|git|main_branch_name|master|Define the main branch name for your git project|
 |jira|url|None|JIRA Base URL|
 |jira|username|None|A JIRA User|
 |jira|password|None|The password for the user|
@@ -91,7 +95,7 @@ For each of theses branches, the following commands will be executed:
 ```sh
 $ git checkout $branch
 $ git pull
-$ git merge origin/master
+$ git merge origin/main
 $ git push origin $branch
 $ git checkout $release_branch
 $ git merge origin/$branch
@@ -239,7 +243,7 @@ Switched to a new branch 'release/Barking_Dog_GA'
 ```
 
 #### Finalize a release
-When you execute the `braumeister` with the `finalize` action it will merge the given branch back to `origin/master`. 
+When you execute the `braumeister` with the `finalize` action it will merge the given branch back to define main branch (e.g. `origin/main`).
 
 THIS CHANGES YOUR REMOTE REPOSITORY, HANDLE WITH CARE!
 

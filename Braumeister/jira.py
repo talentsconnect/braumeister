@@ -25,7 +25,8 @@ class Jira:
 
         if not custom_field_name:
             raise ValueError(
-                "Missing 'branch_custom_field_id' in 'jira' section. Please run 'braumeister init'")
+                "Missing 'branch_custom_field_id' in 'jira' section. Please run 'braumeister init'"
+            )
 
         for issue in json_object["issues"]:
             obj = Jira.get_specific_issue(issue["self"])
@@ -42,7 +43,11 @@ class Jira:
 
             if not key:
                 print(
-                    Fore.YELLOW + "[~] " + Fore.RESET + "Ticket with empty branch field found: %s - Ignoring." % issue)
+                    Fore.YELLOW
+                    + "[~] "
+                    + Fore.RESET
+                    + "Ticket with empty branch field found: %s - Ignoring." % issue
+                )
                 continue
 
             if key in branches:
@@ -58,14 +63,23 @@ class Jira:
     @staticmethod
     def get_relevant_issues(fix_version):
         print(
-            Fore.GREEN + "[*] " + Fore.RESET + "Requesting all issues with fixVersion: " + Fore.GREEN + fix_version + Fore.RESET)
+            Fore.GREEN
+            + "[*] "
+            + Fore.RESET
+            + "Requesting all issues with fixVersion: "
+            + Fore.GREEN
+            + fix_version
+            + Fore.RESET
+        )
 
         jira_url = Settings.get("jira", "url", None)
 
         if not jira_url:
-            raise ValueError("Missing 'url' in 'jira' section. Please run 'braumeister init'")
+            raise ValueError(
+                "Missing 'url' in 'jira' section. Please run 'braumeister init'"
+            )
 
-        query = "fixVersion=\"" + fix_version + "\" ORDER BY updated DESC"
+        query = 'fixVersion="' + fix_version + '" ORDER BY updated DESC'
         data = {"jql": query}
         url = "%s/rest/api/2/search" % jira_url
 
@@ -74,15 +88,26 @@ class Jira:
     @staticmethod
     def update_jira_issues(issues):
         print("------------------------------------")
-        print(Fore.GREEN + "[+]" + Fore.RESET + " Update status to Staging needed on all related jira issues!")
+        print(
+            Fore.GREEN
+            + "[+]"
+            + Fore.RESET
+            + " Update status to Staging needed on all related jira issues!"
+        )
 
         jira_url = Settings.get("jira", "url", None)
         if not jira_url:
-            raise ValueError("Missing 'url' in 'jira' section. Please run 'braumeister init'")
+            raise ValueError(
+                "Missing 'url' in 'jira' section. Please run 'braumeister init'"
+            )
 
-        jira_destination_transition = Settings.get("jira", "destination_transition", None)
+        jira_destination_transition = Settings.get(
+            "jira", "destination_transition", None
+        )
         if not jira_destination_transition:
-            raise ValueError("Missing 'destination_transition' in 'jira' section. Please run 'braumeister init'")
+            raise ValueError(
+                "Missing 'destination_transition' in 'jira' section. Please run 'braumeister init'"
+            )
 
         for issue in issues:
             url = "%s/rest/api/2/issue/%s/transitions" % (jira_url, issue)
@@ -95,14 +120,10 @@ class Jira:
 
     @staticmethod
     def update_jira_issue(issue, transition, url):
-        data = {
-            "transition": {
-                "id": transition["id"]
-            }
-        }
+        data = {"transition": {"id": transition["id"]}}
         print("Updating jira status on " + issue + " to " + transition["name"])
 
-        if (not Settings.is_dry_run()):
+        if not Settings.is_dry_run():
             Jira.call_jira_post(url, json.dumps(data))
 
     @staticmethod
@@ -118,14 +139,20 @@ class Jira:
 
         if not jira_user:
             raise ValueError(
-                "Missing 'username' in 'jira' section. Please run 'braumeister init'")
+                "Missing 'username' in 'jira' section. Please run 'braumeister init'"
+            )
 
         if not jira_password:
             raise ValueError(
-                "Missing 'password' in 'jira' section. Please run 'braumeister init'")
+                "Missing 'password' in 'jira' section. Please run 'braumeister init'"
+            )
 
-        response = requests.post(url, data=data, auth=(jira_user, jira_password),
-                                 headers={'content-type': 'application/json'})
+        response = requests.post(
+            url,
+            data=data,
+            auth=(jira_user, jira_password),
+            headers={"content-type": "application/json"},
+        )
 
         try:
             return json.loads(response.text)
@@ -138,12 +165,20 @@ class Jira:
         jira_password = Settings.get("jira", "password", None)
 
         if not jira_user:
-            raise ValueError("Missing 'username' in 'jira' section. Please run 'braumeister init'")
+            raise ValueError(
+                "Missing 'username' in 'jira' section. Please run 'braumeister init'"
+            )
 
         if not jira_password:
-            raise ValueError("Missing 'password' in 'jira' section. Please run 'braumeister init'")
+            raise ValueError(
+                "Missing 'password' in 'jira' section. Please run 'braumeister init'"
+            )
 
-        response = requests.get(url, auth=(jira_user, jira_password), headers={'content-type': 'application/json'})
+        response = requests.get(
+            url,
+            auth=(jira_user, jira_password),
+            headers={"content-type": "application/json"},
+        )
 
         try:
             return json.loads(response.text)
