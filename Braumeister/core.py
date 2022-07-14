@@ -7,7 +7,7 @@ from .builder import Builder
 from .settings import Settings
 from .setup import Setup
 
-__version__ = "0.4.1"
+__version__ = "0.5.0"
 
 class Core:
 
