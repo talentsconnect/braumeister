@@ -38,9 +38,9 @@ verbose = false
 main_branch_name = main
 
 [jira]
-url = https://jira.dev
+url = https://your-domain.atlassian.net
 username = my-user
-password = secret
+password = my-api-token
 destination_transition = Merged
 branch_custom_field_id = customfield_5711
 ```
