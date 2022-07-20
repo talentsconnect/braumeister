@@ -43,11 +43,7 @@ class Jira:
 
             if not key:
                 print(
-                    Fore.YELLOW
-                    + "[~] "
-                    + Fore.RESET
-                    + "Ticket with empty branch field found: %s - Ignoring." % issue
-                )
+                    Fore.YELLOW + "[~] " + Fore.RESET + "Ticket with empty branch field found: %s - Ignoring." % issue)
                 continue
 
             if key in branches:
@@ -63,14 +59,7 @@ class Jira:
     @staticmethod
     def get_relevant_issues(fix_version):
         print(
-            Fore.GREEN
-            + "[*] "
-            + Fore.RESET
-            + "Requesting all issues with fixVersion: "
-            + Fore.GREEN
-            + fix_version
-            + Fore.RESET
-        )
+            Fore.GREEN + "[*] " + Fore.RESET + "Requesting all issues with fixVersion: " + Fore.GREEN + fix_version + Fore.RESET)
 
         jira_url = Settings.get("jira", "url", None)
 
@@ -79,21 +68,16 @@ class Jira:
                 "Missing 'url' in 'jira' section. Please run 'braumeister init'"
             )
 
-        query = 'fixVersion="' + fix_version + '" ORDER BY updated DESC'
-        data = {"jql": query}
-        url = "%s/rest/api/2/search" % jira_url
+        query = "fixVersion=\"" + fix_version + "\" ORDER BY updated DESC"
+        url = "%s/rest/api/2/search?jql=%s" % (jira_url, query)
 
-        return Jira.call_jira_post(url, json.dumps(data))
+        return Jira.call_jira_get(url)
 
     @staticmethod
     def update_jira_issues(issues):
         print("------------------------------------")
-        print(
-            Fore.GREEN
-            + "[+]"
-            + Fore.RESET
-            + " Update status to Staging needed on all related jira issues!"
-        )
+        print(Fore.GREEN + "[+]" + Fore.RESET +
+              " Update status to Staging needed on all related jira issues!")
 
         jira_url = Settings.get("jira", "url", None)
         if not jira_url:
@@ -120,10 +104,14 @@ class Jira:
 
     @staticmethod
     def update_jira_issue(issue, transition, url):
-        data = {"transition": {"id": transition["id"]}}
+        data = {
+            "transition": {
+                "id": transition["id"]
+            }
+        }
         print("Updating jira status on " + issue + " to " + transition["name"])
 
-        if not Settings.is_dry_run():
+        if (not Settings.is_dry_run()):
             Jira.call_jira_post(url, json.dumps(data))
 
     @staticmethod
@@ -138,21 +126,24 @@ class Jira:
         jira_password = Settings.get("jira", "password", None)
 
         if not jira_user:
-            raise ValueError(
-                "Missing 'username' in 'jira' section. Please run 'braumeister init'"
-            )
+            raise ValueError("Missing 'username' in 'jira' section. Please run 'braumeister init'"
+        )
 
         if not jira_password:
             raise ValueError(
                 "Missing 'password' in 'jira' section. Please run 'braumeister init'"
             )
 
-        response = requests.post(
-            url,
-            data=data,
-            auth=(jira_user, jira_password),
-            headers={"content-type": "application/json"},
-        )
+        headers = {
+            'content-type': 'application/json',
+            'accept': 'application/json',
+        }
+
+        if Settings.get("general", "verbose", False):
+            print(Fore.GREEN + "[*] " + Fore.RESET +
+                  "Calling %s with headers %s" % (url, headers))
+        
+        response = requests.post(url, data=data, auth=(jira_user, jira_password), headers=headers)
 
         try:
             return json.loads(response.text)
@@ -174,11 +165,17 @@ class Jira:
                 "Missing 'password' in 'jira' section. Please run 'braumeister init'"
             )
 
-        response = requests.get(
-            url,
-            auth=(jira_user, jira_password),
-            headers={"content-type": "application/json"},
-        )
+        headers = {
+            'content-type': 'application/json',
+            'accept': 'application/json',
+        }
+
+        url = requests.utils.requote_uri(url)
+        if Settings.get("general", "verbose", False):
+            print(Fore.GREEN + "[*] " + Fore.RESET +
+                  "Calling %s with headers %s" % (url, headers))
+
+        response = requests.get(url, auth=(jira_user, jira_password), headers=headers)
 
         try:
             return json.loads(response.text)
