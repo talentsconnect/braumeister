@@ -36,6 +36,7 @@ verbose = false
 
 [git]
 main_branch_name = main
+try_before_merge = false
 
 [jira]
 url = https://your-domain.atlassian.net
@@ -49,6 +50,7 @@ branch_custom_field_id = customfield_5711
 |-------|---|-----|---|
 |general|verbose|false|Verbose output|
 |git|main_branch_name|master|Define the main branch name for your git project|
+|git|try_before_merge|false|Flag to check for the existence of the branches before creating a RC|
 |jira|url|None|JIRA Base URL|
 |jira|username|None|A JIRA User|
 |jira|password|None|The password for the user|

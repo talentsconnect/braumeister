@@ -51,6 +51,8 @@ class Candidate:
                 print("")
                 sys.exit(1)
 
+            Git.try_before_merge(branches)
+
             candidate_branch_name = Git.create_candidate_branch(self.fix_version)
             resume_code = 0
 
