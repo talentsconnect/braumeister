@@ -203,7 +203,7 @@ class Git:
         current_branch = ""
         code = resume_code
         for key in branches:
-            current_branch = key
+            current_branch = key.strip()
             try:
                 if Settings.get("general", "verbose", False):
                     print("------------------------------------")
