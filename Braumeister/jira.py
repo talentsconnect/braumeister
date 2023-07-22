@@ -39,7 +39,7 @@ class Jira:
                     "Missing %s in jira custom fields. Are you sure the name is %s? I've found these: \n%s" % (
                         custom_field_name, custom_field_name, ", ".join(obj["fields"])))
 
-            key = obj["fields"][custom_field_name]
+            key = obj["fields"][custom_field_name].strip()
 
             if not key:
                 print(
