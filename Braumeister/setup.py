@@ -33,6 +33,7 @@ class Setup:
         self.jira_destination_transition = ""
         self.jira_branch_field_id = ""
         self.git_main_branch_name = "master"
+        self.git_try_before_merge = False
 
     def print_success(self, message):
         print("%s[*]%s %s" % (Fore.GREEN, Fore.RESET, message))
@@ -81,6 +82,16 @@ class Setup:
             "Main branch name [master]",
             default=self.git_main_branch_name
         )
+
+        git_try_before_merge = self.ask_optional(
+            "Should we check for the existence of the branches, before creating a release canidate? [no]",
+            default=self.git_try_before_merge
+        )
+
+        if git_try_before_merge in ["y", "yes", "j", "ja"]:
+            self.git_try_before_merge = True
+        else:
+            self.git_try_before_merge = False
 
     def ask_jira(self):
         """ Asking questions about the jira configuration """
@@ -133,6 +144,7 @@ class Setup:
         print()
 
         Settings.save("git", "main_branch_name", self.git_main_branch_name)
+        Settings.save("git", "try_before_merge", self.git_try_before_merge)
         Settings.save("jira", "url", self.jira_url)
         Settings.save("jira", "username", self.jira_user)
         Settings.save("jira", "password", self.jira_pass)

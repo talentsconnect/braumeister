@@ -197,6 +197,37 @@ class Git:
         first_line = stdoutput.splitlines()[0]
         branch_name = first_line.split()[2]
         return branch_name
+    
+    @staticmethod
+    def try_before_merge(branches):
+        try_before_merge_enabled = Settings.get("git", "try_before_merge", False)
+
+        print("[?] Trying before merge? %s" % try_before_merge_enabled)
+
+        if(try_before_merge_enabled):
+            non_existing_branches = Git.get_non_existing_branches(branches)
+            
+            if len(non_existing_branches) > 0:
+                print(Fore.RED + "[-]" + Fore.RESET + " Uh-oh! The following branches does not exists:")
+                for b in non_existing_branches:
+                    print(Fore.RED + "[-]" + Fore.RESET + "\t'%s'" % b)
+                raise ValueError("Non existing branches found.")
+
+    @staticmethod
+    def get_non_existing_branches(branches):
+        if len(branches) <= 0:
+            return []
+
+        branches_not_found = []
+        for branch in branches:
+            print("[?] Trying branch %s" % branch)
+            # don't use `--exit-code` here, since that will raise a ValueError for non 0 exit codes
+            lines = Git.call_git_command(["git", "ls-remote", "--heads", "origin", branch])
+            
+            if len(lines) == 0:
+                branches_not_found.append(branch)
+        
+        return branches_not_found
 
     @staticmethod
     def merge_branches(branches, target_branch, resume_code):
